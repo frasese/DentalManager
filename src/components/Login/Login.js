@@ -1,35 +1,28 @@
-import React, { useState } from "react";
-import { navigate } from "@reach/router";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import { navigate, useLocation } from "@reach/router";
 
-//import { loginUser } from "../API";
+import AuthService from "../../services/auth.service";
 
 import "./Login.css";
 
-function loginUser(state) {
-  // pretend this makes a request
-  return Promise.resolve({ token: "aaaa" });
-}
-
-const Login = ({ setToken }) => {
+const Login = () => {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const location = useLocation();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      navigate("/");
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    loginUser({
-      username,
-      password
-    }).then(
-      (token) => {
-        console.log("OK -> token: " + token);
-        setToken(token);
-        navigate("/");
-      },
-      (error) => {
-        console.log("Error:" + error);
-      }
-    );
+    await AuthService.login(username, password).then(() => {
+      navigate(location.state?.from ? location.state.from : "/");
+    });
   };
 
   return (
@@ -55,16 +48,4 @@ const Login = ({ setToken }) => {
   );
 };
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired
-};
-
-/*const logout = () => {
-  localStorage.removeItem("token");
-};*/
-
-/*export default {
-  Login,
-  logout
-};*/
 export default Login;

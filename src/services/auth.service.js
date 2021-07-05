@@ -10,8 +10,17 @@ const register = (username, email, password) => {
   });
 };
 
-const login = (username, password) => {
-  return axios
+const login = async (username, password) => {
+  const user = {
+    id: 1,
+    username: "Test",
+    email: "test@email.com",
+    accessToken: "aaaaaaaaaa",
+    roles: ["ROLE_ADMIN"]
+  };
+  localStorage.setItem("user", JSON.stringify(user));
+  return user;
+  /*return axios
     .post(API_URL + "signin", {
       username,
       password
@@ -22,15 +31,20 @@ const login = (username, password) => {
       }
 
       return response.data;
-    });
+    });*/
 };
 
 const logout = () => {
   localStorage.removeItem("user");
 };
 
+const getCurrentUser = () => {
+  return JSON.parse(localStorage.getItem("user"));
+};
+
 export default {
   register,
   login,
-  logout
+  logout,
+  getCurrentUser
 };

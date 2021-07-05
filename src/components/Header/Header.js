@@ -1,18 +1,32 @@
 import React from "react";
-import { Router, Link, navigate } from "@reach/router";
+import { Link, navigate, useLocation } from "@reach/router";
 
-const logout = () => {
-  sessionStorage.clear();
-  navigate("/login");
+import AuthService from "../../services/auth.service";
+
+const BackButton = () => {
+  const location = useLocation();
+
+  if (location.pathname !== "/") {
+    return <Link to="../">Back</Link>;
+  }
+  return null;
 };
 
 export default function Header() {
   const handleClick = () => {
-    logout();
+    AuthService.logout();
+    navigate("/login");
   };
+
   return (
-    <>
-      <button onClick={handleClick}>Logout</button>
-    </>
+    <div>
+      <nav className="navbar navbar-expand navbar-dark bg-dark">
+        <Link to="/">Return to main</Link>
+        <BackButton />
+        <button className="btn btn-primary" onClick={handleClick}>
+          Logout
+        </button>
+      </nav>
+    </div>
   );
 }
