@@ -35,6 +35,7 @@ export default function Main() {
   const location = useLocation();
 
   useEffect(() => {
+    console.log("loading main");
     const user = AuthService.getCurrentUser();
 
     if (!user) {
@@ -45,10 +46,9 @@ export default function Main() {
   return (
     <>
       <Header />
-      <Dashboard />
       <Router>
         <MainMenu default />
-        <Placeholder path="/client" aaa="eee">
+        <Placeholder path="/client">
           <Clients path="/" />
           <Client path=":clientId" />
         </Placeholder>

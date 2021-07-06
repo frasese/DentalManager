@@ -20,28 +20,36 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await AuthService.login(username, password).then(() => {
-      navigate(location.state?.from ? location.state.from : "/");
-    });
+    await AuthService.login(username, password);
+    navigate(location.state?.from ? location.state.from : "/");
   };
 
   return (
-    <div className="login-wrapper">
-      <h1>Please Log In</h1>
+    <div className="container">
+      <h1>Introduzca usuario y contraseña</h1>
       <form onSubmit={handleSubmit}>
-        <label>
-          <p>Username</p>
-          <input type="text" onChange={(e) => setUserName(e.target.value)} />
-        </label>
-        <label>
-          <p>Password</p>
+        <div className="form-group mb-3">
+          <label htmlFor="username">Usuario:</label>
+          <input
+            type="text"
+            name="username"
+            className="form-control"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </div>
+        <div className="form-group mb-3">
+          <label htmlFor="password">Contraseña:</label>
           <input
             type="password"
+            name="password"
+            className="form-control"
             onChange={(e) => setPassword(e.target.value)}
           />
-        </label>
+        </div>
         <div>
-          <button type="submit">Submit</button>
+          <button type="submit" className="btn btn-success mb-4">
+            Enviar
+          </button>
         </div>
       </form>
     </div>

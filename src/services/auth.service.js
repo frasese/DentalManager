@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = "http://localhost/testserver/";
 
 const register = (username, email, password) => {
   return axios.post(API_URL + "signup", {
@@ -11,7 +11,7 @@ const register = (username, email, password) => {
 };
 
 const login = async (username, password) => {
-  const user = {
+  /*const user = {
     id: 1,
     username: "Test",
     email: "test@email.com",
@@ -20,18 +20,20 @@ const login = async (username, password) => {
   };
   localStorage.setItem("user", JSON.stringify(user));
   return user;
-  /*return axios
-    .post(API_URL + "signin", {
+*/
+  try {
+    const response = await axios.post(API_URL + "login.php", {
       username,
       password
-    })
-    .then((response) => {
-      if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-
-      return response.data;
-    });*/
+    });
+    if (response.data.accessToken) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      return true;
+    }
+  } catch (err) {
+    console.log("Error login", err);
+  }
+  return false;
 };
 
 const logout = () => {

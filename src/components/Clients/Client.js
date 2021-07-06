@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { navigate, useLocation } from "@reach/router";
 
 import ClientService from "../../services/client.service";
 import model from "../../models/Client";
@@ -7,7 +6,7 @@ import model from "../../models/Client";
 import DynamicForm from "../Common/DynamicForm";
 
 const Client = (props) => {
-  const [client, setClient] = React.useState({});
+  const [client, setClient] = useState({});
   const submitText = props.clientId === ":new" ? "Crear" : "Guardar";
 
   useEffect(() => {
