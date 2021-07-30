@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Router, navigate } from "@reach/router";
+import React, { useEffect } from "react";
+import { Router } from "@reach/router";
 
 import Login from "./components/Login/Login";
 import Main from "./components/Main/Main";
 
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+//import "bootstrap/dist/js/bootstrap.js";
+//import "bootstrap-icons/font/bootstrap-icons.css";
+import "antd/dist/antd.css";
+import "antd-button-color/dist/css/style.css";
+
+import "./App.scss";
 
 const App = () => {
   useEffect(() => {}, []);
