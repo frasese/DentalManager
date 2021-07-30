@@ -1,41 +1,36 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import { useLocation, navigate, Link, Router } from "@reach/router";
+
+import { Layout, Menu, Breadcrumb } from "antd";
+import {
+  DesktopOutlined,
+  PieChartOutlined,
+  FileOutlined,
+  TeamOutlined,
+  UserOutlined,
+  HomeOutlined
+} from "@ant-design/icons";
+import Button from "antd-button-color";
 
 import AuthService from "../../services/auth.service";
 
-import Header from "../Header/Header";
+import MyHeader from "../Header/Header";
 import Dashboard from "../Dashboard/Dashboard";
 import Clients from "../Clients/Clients";
 import Client from "../Clients/Client";
+import MainMenu from "./MainMenu";
+
+const { Header, Content, Footer, Sider } = Layout;
 
 const Placeholder = ({ children }) => {
   return children;
 };
 
-const MainMenu = () => {
-  return (
-    <ul>
-      <li>
-        <Link to="/">Home</Link>
-      </li>
-      <li>
-        <Link to="/client">Clientes</Link>
-      </li>
-      <li>
-        <Link to="/support">Support</Link>
-      </li>
-      <li>
-        <Link to="../">Go Back</Link>
-      </li>
-    </ul>
-  );
-};
-
 export default function Main() {
   const location = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    console.log("loading main");
     const user = AuthService.getCurrentUser();
 
     if (!user) {
@@ -43,16 +38,38 @@ export default function Main() {
     }
   }, []);
 
+  const handleCollapse = (collapsed) => {
+    setCollapsed(collapsed);
+  };
+
   return (
-    <>
-      <Header />
-      <Router>
-        <MainMenu default />
-        <Placeholder path="/client">
-          <Clients path="/" />
-          <Client path=":clientId" />
-        </Placeholder>
-      </Router>
-    </>
+    <Layout className="main-layout">
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={handleCollapse}
+        //collapsedWidth={0}
+        //trigger={null}
+      >
+        <MainMenu />
+      </Sider>
+      <Layout className="site-layout">
+        <Header className="site-layout-header">
+          <MyHeader />
+        </Header>
+        <Content>
+          <div className="site-layout-content">
+            <Router>
+              <Dashboard default />
+              <Placeholder path="/client">
+                <Clients path="/" />
+                <Client path=":clientId" />
+              </Placeholder>
+            </Router>
+          </div>
+        </Content>
+        <Footer className="site-layout-footer">Footer by Paco</Footer>
+      </Layout>
+    </Layout>
   );
 }

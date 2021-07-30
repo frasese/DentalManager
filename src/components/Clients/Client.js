@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 
 import ClientService from "../../services/client.service";
 import model from "../../models/Client";
+import oldmodel from "../../models/Client-old";
 
 import DynamicForm from "../Common/DynamicForm";
+import OldDynamicForm from "../Common/DynamicForm-old";
 
 const Client = (props) => {
   const [client, setClient] = useState({});
@@ -22,8 +24,8 @@ const Client = (props) => {
     }
   }, [props.clientId]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (values) => {
+    //event.preventDefault();
 
     console.log("Data:", client);
     ClientService.postClient(client).then(
@@ -42,13 +44,25 @@ const Client = (props) => {
   }
 
   return (
-    <DynamicForm
-      model={model}
-      item={client}
-      setItem={setClient}
-      handleSubmit={handleSubmit}
-      submitText={submitText}
-    />
+    <>
+      <DynamicForm
+        model={model}
+        item={client}
+        setItem={setClient}
+        handleSubmit={handleSubmit}
+        submitText={submitText}
+      />
+      <hr />
+      {/*
+      <OldDynamicForm
+        model={oldmodel}
+        item={client}
+        setItem={setClient}
+        handleSubmit={handleSubmit}
+        submitText={submitText}
+      />
+      */}
+    </>
   );
 };
 

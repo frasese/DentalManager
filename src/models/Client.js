@@ -1,19 +1,32 @@
-export default {
-  id: {},
-  name: {
-    text: "Nombre",
-    value: "Introduzca nombre",
+export default [
+  {
+    //andt::Table::Column
+    title: "Nombre",
+    dataIndex: "name",
+    //Custom::table
+    searchable: true,
+    //Custom::form
+    text: "Introduzca nombre",
     //type: "text",
-    required: true
+    required: true,
+    help: "Lo que viene a ser el nombre"
   },
-  value: {
-    text: "Value",
-    value: "Introduzca value",
+  {
+    //andt::Table::Column
+    title: "Value",
+    dataIndex: "value",
+    //Custom::form
+    text: "Introduzca value",
     type: "checkbox"
   },
-  email: {
-    text: "Email",
-    value: "Introduzca email",
-    type: "email"
+  {
+    //andt::Table::Column
+    title: "Email",
+    dataIndex: "email",
+    //Custom::form
+    text: "Introduzca email",
+    type: "email",
+    required: true,
+    searchable: true
   }
-};
+];

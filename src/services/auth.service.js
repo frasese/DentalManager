@@ -10,8 +10,10 @@ const register = (username, email, password) => {
   });
 };
 
-const login = async (username, password) => {
-  /*const user = {
+const login = async ({ username, password }) => {
+  //console.log("username: ", username);
+  //console.log("password: ", password);
+  const user = {
     id: 1,
     username: "Test",
     email: "test@email.com",
@@ -20,9 +22,9 @@ const login = async (username, password) => {
   };
   localStorage.setItem("user", JSON.stringify(user));
   return user;
-*/
+
   try {
-    const response = await axios.post(API_URL + "login.php", {
+    const response = await axios.post(API_URL + "?a=login", {
       username,
       password
     });

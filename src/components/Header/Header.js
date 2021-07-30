@@ -1,22 +1,41 @@
 import React from "react";
 import { Link, navigate, useLocation } from "@reach/router";
+import Button from "antd-button-color";
+import { LeftSquareOutlined, PoweroffOutlined } from "@ant-design/icons";
 
 import AuthService from "../../services/auth.service";
 
-const MainButton = () => {
+import "./Header.scss";
+
+/*const MainButton = () => {
   const location = useLocation();
 
   if (location.pathname !== "/") {
-    return <Link to="/">Return to main</Link>;
+    return (
+      <Link to="/">
+        <Button type="primary" icon={<HomeOutlined />}>
+          Return to main
+        </Button>
+      </Link>
+    );
   }
   return null;
-};
+};*/
 
 const BackButton = () => {
   const location = useLocation();
 
-  if (location.pathname !== "/") {
-    return <Link to="../">Back</Link>;
+  /*console.log(
+    location.pathname + " -> " + (location.pathname.match(/\//g) || []).length
+  );*/
+  if ((location.pathname.match(/\//g) || []).length > 1) {
+    return (
+      <Link to="../">
+        <Button type="primary" icon={<LeftSquareOutlined />}>
+          Back
+        </Button>
+      </Link>
+    );
   }
   return null;
 };
@@ -28,14 +47,16 @@ export default function Header() {
   };
 
   return (
-    <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <MainButton />
-        <BackButton />
-        <button className="btn btn-primary" onClick={handleClick}>
-          Logout
-        </button>
-      </nav>
-    </div>
+    <>
+      <BackButton />
+      <Button
+        type="primary"
+        className="btn-logout"
+        icon={<PoweroffOutlined />}
+        onClick={handleClick}
+      >
+        Logout
+      </Button>
+    </>
   );
 }

@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { navigate, useLocation } from "@reach/router";
+import { Layout, Form, Input } from "antd";
+import Button from "antd-button-color";
 
 import AuthService from "../../services/auth.service";
 
 import "./Login.css";
 
+const { Content } = Layout;
+
 const Login = () => {
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
   const location = useLocation();
 
   useEffect(() => {
@@ -18,41 +20,41 @@ const Login = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await AuthService.login(username, password);
+  const handleSubmit = async (values) => {
+    //console.log(values);
+    await AuthService.login(values);
     navigate(location.state?.from ? location.state.from : "/");
   };
 
   return (
-    <div className="container">
-      <h1>Introduzca usuario y contraseña</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group mb-3">
-          <label htmlFor="username">Usuario:</label>
-          <input
-            type="text"
-            name="username"
-            className="form-control"
-            onChange={(e) => setUserName(e.target.value)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label htmlFor="password">Contraseña:</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit" className="btn btn-success mb-4">
-            Enviar
-          </button>
-        </div>
-      </form>
-    </div>
+    <Layout className="site-layout-background login-layout">
+      <Content>
+        <h1>Introduzca usuario y contraseña</h1>
+        <Form
+          layout="horizontal"
+          onFinish={handleSubmit}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+        >
+          <Form.Item name="username" label="Usuario">
+            <Input type="text" />
+          </Form.Item>
+          <Form.Item name="password" label="Contraseña">
+            <Input type="password" />
+          </Form.Item>
+          <Form.Item
+            wrapperCol={{
+              span: 14,
+              offset: 4
+            }}
+          >
+            <Button type="success" htmlType="submit">
+              Enviar
+            </Button>
+          </Form.Item>
+        </Form>
+      </Content>
+    </Layout>
   );
 };
 

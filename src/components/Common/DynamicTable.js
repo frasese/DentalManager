@@ -1,91 +1,129 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { Table, Input, Space } from "antd";
+import Button from "antd-button-color";
 import { Link } from "@reach/router";
+import { EditOutlined, SearchOutlined } from "@ant-design/icons";
 
-export default function DynamicTable({ model, items, setItems, doRemove }) {
-  const [itemsChecked, setItemsChecked] = useState({});
+export default function DynamicTable({
+  model,
+  items,
+  doRemove,
+  rowSelectionType = "checkbox"
+}) {
+  //Checkbox keys
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  //Ajax loading state
+  const [loading, setLoading] = useState(false);
+  //Search input
+  const searchInputRef = useRef();
 
-  const handleAllCheckboxes = (e) => {
-    setItemsChecked(
-      items.reduce((ret, i) => {
-        return { ...ret, [i.id]: e.target.checked };
-      }, {})
-    );
-  };
-
-  const handleClick = (e, u) => {
-    setItemsChecked({ ...itemsChecked, [u.id]: e.target.checked });
-  };
-
-  const handleRemove = () => {
-    doRemove(
-      Object.keys(itemsChecked).filter((i) => {
-        return itemsChecked[i];
-      })
-    );
-  };
-
-  const renderHeaderColumns = (
-    <>
-      {Object.keys(model).map((p) => {
-        if (Object.values(model[p]).length >= 1) {
-          return <th key={p}>{model[p].text}</th>;
-        }
-        return null;
-      })}
-    </>
-  );
-  const renderRowColumns = (item) => {
-    return (
-      <>
-        <td>
-          <input
-            type="checkbox"
-            onChange={(e) => handleClick(e, item)}
-            checked={itemsChecked[item.id] || false}
-          />
-        </td>
-        {Object.keys(model).map((p) => {
-          if (Object.values(model[p]).length >= 1) {
-            return (
-              <td key={p}>
-                {item[p]} - {(itemsChecked[item.id] && "true") || "false"}
-              </td>
-            );
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={searchInputRef}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          return null;
-        })}
-        <td>
-          <Link className="bi bi-pencil-square" to={item.id} title="Editar" />
-        </td>
-      </>
-    );
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters()}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : "",
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInputRef.current.select(), 100);
+      }
+    }
+  });
+
+  //On remove button click
+  const handleRemove = async () => {
+    setLoading(true);
+    await doRemove(selectedRowKeys);
+    setLoading(false);
   };
+
+  //Checkbox/Radio colum config
+  const rowSelection = {
+    type: rowSelectionType,
+    onChange: (selectedKeys) => {
+      setSelectedRowKeys(selectedKeys);
+    }
+  };
+
+  //Set action column
+  let customModel = [
+    ...model,
+    {
+      //andt::Table::Column
+      title: "",
+      key: "action",
+      render: (text, record) => (
+        <Link to={record.key} title="Editar">
+          <EditOutlined />
+        </Link>
+      )
+    }
+  ];
+
+  //Set search field
+  customModel = customModel.map((i) => {
+    if (i.searchable) {
+      return { ...i, ...getColumnSearchProps(i.dataIndex) };
+    }
+    return i;
+  });
 
   return (
     <>
-      <Link className="btn btn-primary" to=":new">
-        New
+      <Link to=":new">
+        <Button type="success">New</Button>
       </Link>
-      <button className="btn btn-primary" onClick={handleRemove}>
+      <Button type="primary" danger onClick={handleRemove} loading={loading}>
         Remove
-      </button>
+      </Button>
 
-      <table className="table table-striped table-bordered table-hover">
-        <thead>
-          <tr>
-            <th>
-              <input type="checkbox" onClick={handleAllCheckboxes} />
-            </th>
-            {renderHeaderColumns}
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <tr key={item.id}>{renderRowColumns(item)}</tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        columns={customModel}
+        dataSource={items}
+        rowSelection={rowSelection}
+      />
 
       <Link className="btn btn-primary" to=":new">
         New
